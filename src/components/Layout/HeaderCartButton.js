@@ -1,43 +1,46 @@
-import { useContext, useEffect, useState } from 'react';
-
-import CartIcon from '../Cart/CartIcon';
-import CartContext from '../../store/cart-context';
+import React, { useContext, useEffect, useState } from 'react';
 import classes from './HeaderCartButton.module.css';
+import CartIcon from '../Cart/CartIcon';
+import ShowCartContext from '../../store/showCart-context';
+import CartContext from '../../store/cart-context';
 
-const HeaderCartButton = (props) => {
-  const [btnIsHighlighted, setBtnIsHighlighted] = useState(false);
-  const cartCtx = useContext(CartContext);
+const HeaderCartButton = () => {
+  const [ isAdded, setIsAdded ] = useState( false );
 
-  const { items } = cartCtx;
+  const showCartCtx = useContext( ShowCartContext );
+  const cartCtx = useContext( CartContext );
 
-  const numberOfCartItems = items.reduce((curNumber, item) => {
+  const numberOfCartItems = cartCtx.items.reduce( ( curNumber, item ) => {
     return curNumber + item.amount;
-  }, 0);
+  }, 0 );
 
-  const btnClasses = `${classes.button} ${btnIsHighlighted ? classes.bump : ''}`;
+  const toggleShowCart = () => {
+    showCartCtx.showCart();
+  };
 
-  useEffect(() => {
-    if (items.length === 0) {
+  const btnClasses = `${ classes.button } ${ isAdded ? classes.bump : '' }`;
+
+  useEffect( () => {
+    if ( cartCtx.items.length === 0 ) {
       return;
     }
-    setBtnIsHighlighted(true);
+    setIsAdded( true );
 
-    const timer = setTimeout(() => {
-      setBtnIsHighlighted(false);
-    }, 300);
-
+    const timer = setTimeout( () => {
+      setIsAdded( false );
+    }, 300 );
     return () => {
-      clearTimeout(timer);
+      clearTimeout( timer );
     };
-  }, [items]);
+  }, [ cartCtx ] );
 
   return (
-    <button className={btnClasses} onClick={props.onClick}>
-      <span className={classes.icon}>
+    <button className={ btnClasses } onClick={ toggleShowCart }>
+      <span className={ classes.icon }>
         <CartIcon />
       </span>
-      <span>Your Cart</span>
-      <span className={classes.badge}>{numberOfCartItems}</span>
+      <span>You Cart</span>
+      <span className={ classes.badge }>{ numberOfCartItems }</span>
     </button>
   );
 };
