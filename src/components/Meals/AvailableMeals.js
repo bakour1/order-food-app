@@ -3,9 +3,6 @@ import classes from './AvailableMeals.module.css';
 import MealItem from './MealItem/MealItem';
 import Card from '../UI/Card';
 
-
-
-
 const AvailableMeals = () => {
 
   const [ meals, setMeals ] = useState( [] );
@@ -69,8 +66,6 @@ const AvailableMeals = () => {
       />
     )
   }</ul>;
-
-
 
   return (
     <section className={ classes.meals }>

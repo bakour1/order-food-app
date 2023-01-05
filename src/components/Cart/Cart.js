@@ -46,9 +46,23 @@ const Cart = () => {
   const checkoutHandler = () => {
     setIsCheckout( true );
   };
-  const cancelCheckoutHandler = () => {
-    setIsCheckout( false );
+
+  const submitOrderHandler = async ( userData ) => {
+    const dataSend = await ( fetch( 'https://react-movies-38d33-default-rtdb.firebaseio.com/orders.json', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify( {
+        user: userData,
+        orderedItems: cartCtx.items,
+      } ),
+    } ) );
+    const dataResponse = await dataSend.json();
+
+    console.log( dataResponse );
   };
+
   return (
     <Modal>
       { cartItems }
@@ -56,8 +70,8 @@ const Cart = () => {
         <span>Total Amount</span>
         <span>{ totalAmount }</span>
       </div>
-      { isCheckout && <Checkout
-        onCancel={ cancelCheckoutHandler }
+      { isCheckout && <Checkout onConfirm={ submitOrderHandler }
+        onCancel={ hideCartHandler }
       /> }
       { !isCheckout && <div className={ classes.actions }>
         <button className={ classes[ 'button--alt' ] } onClick={ hideCartHandler }>
